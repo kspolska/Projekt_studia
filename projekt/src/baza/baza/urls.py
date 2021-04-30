@@ -32,8 +32,7 @@ urlpatterns = [
     path('Omnie', views.Omnie, name='omnie'),
     path('Kontakt', views.Kontakt, name='kontakt'),
     path('rocznik/<int:lata>/', views.rocznik, name='latapodstrony'),
-    path('base', views.base, name='home/'),
- #   path('main_base',views.main_base, name='main_base'),
- #   path('main_base_page',views.main_base_page, name='main_base_page'),
-    path('post/new', views.post_new, name='post_new'),
+    path('glosowanie', views.glosowanie, name="Glosowanie"),
+
+
 ]

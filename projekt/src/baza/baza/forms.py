@@ -1,9 +1,16 @@
 from django import forms
-
 from .models import *
+
+
+
 
 class ContactForm(forms.ModelForm):
 	class Meta:
 		model = Dane_osoba
-		fields  = ('imie','nazwisko','haslo','data','email','nr_telefonu','plec','PESEL',)
+		fields  =  '__all__'
 
+
+class GlosyForm(forms.ModelForm):
+	class Meta:
+		model=Glosy
+		fields = '__all__'

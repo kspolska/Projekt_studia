@@ -1,11 +1,8 @@
-from django.shortcuts import render
-from .models import Ustawy
-from .models import Dane_osoba
+from django.shortcuts import render, redirect
+from .models import *
 from django.http import HttpResponse
-
 from .forms import Dane_osoba
-
-import numpy as numpy
+from .forms import GlosyForm
 
 def home_view(request):
 	 return HttpResponse("Hello!") 
@@ -37,20 +34,20 @@ def Omnie(request):
 
 def Kontakt(request):
 	return render(request, "Kontakt.html")
-def base(request):
-	form = Dane_osoba()
-	return render(request, "base.html",{"form":form})
 
-def post_new(request):
-    form = Dane_osoba()
-    return render(request, 'base.html', {'form': form})
 def rocznik(request , lata):
-	#lata = [ '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020','2021']
 	results=Ustawy.objects.all()
-	#dane_z_bazy = Ustawy.objects.all(numpy.unique(rok = lata))
 	return render(request, 'Ustawy_roczniki.html', {"data":results , "rokcznik":lata})
-#def main_base(request):
-#	return render(request, "main_base.html")
 
-#def main_base_page(request):
-#	return render(request, "main_base_page.html")
+def glosowanie(request):
+	form = GlosyForm()
+	print('TEST!!!!!!!!!!:')
+	#if request.method == 'POST':
+	print('Printing POST:', request.POST)
+	form = GlosyForm(request.POST)
+	if form.is_valid():
+		print('Udalo sie!!!!!!!!!!:')
+		form.save()
+		return redirect ('/')
+	context = {'form1':form}
+	return render(request, 'oddajglos.html',context)

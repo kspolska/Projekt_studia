@@ -7,20 +7,20 @@
 
 
   tasks:
-  - name: Allow database access with password
+  - name: Allow database local access with password
     lineinfile:
       path: /var/lib/pgsql/data/pg_hba.conf
-      regexp: '^local.*all.*md5'
+      regexp: '^local.*all.*all'
       line: 'local   all             all                                     md5'
       state: present
     register: postgresqlserver
 
-  - name: Allow database access without password for postgres user
+  - name: Allow database local access without password for postgres user
     lineinfile:
       path: /var/lib/pgsql/data/pg_hba.conf
       regexp: '^local.*postgres.*peer'
       line: 'local   all             postgres                                peer'
-      insertbefore: '^local.*all.*md5'
+      insertbefore: '^local.*all.*all'
       state: present
     register: postgresqlserver
 
@@ -39,6 +39,22 @@
       line: 'host    all             all             ::1/128                 md5'
       state: present
     register: postgresqlserver
+
+  - name: Allow database access with password for host only network
+    lineinfile:
+      path: /var/lib/pgsql/data/pg_hba.conf
+      regexp: '^host.*192.168.0.0/16'
+      line: 'host    all             all             192.168.0.0/16            trust'
+      state: present
+    register: postgresqlserver
+
+  - name: Set database address to 192.168.33.10
+    lineinfile:
+      path: /var/lib/pgsql/data/postgresql.conf
+      regexp: '^#listen_addresses'
+      line: "listen_addresses = '192.168.33.10'"
+      state: present
+    register: postgresqlserver    
 
   - name: Restart PostgreSQL database if changed
     service:

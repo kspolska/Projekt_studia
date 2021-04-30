@@ -7,6 +7,7 @@
 				<th style="width: 12em">Pozycja</th>				
 				<th center>Treść ustawy</th>
 				<th class="sortable asc" data-name="title">Tytuł</th>
+				<th center> Glosowanie</th>
 			</tr>
 	
 					{% for result in data %}
@@ -15,7 +16,10 @@
 				<td>Dz.U. {{result.rok}} poz. {{result.nr_ustawy}}</td>			
 				<td  ><a href={{result.link}} >link do dokumentu </a> </td>
 				<td>{{result.tytul}}</td>
-			
+				<td >
+					<button ><a href = "{% url 'Glosowanie' %}">Zaglosuj</a></button>
+				<!-- <input  action= ""  method="POST" type="submit" name="zaglosuj">-->
+				</td>
 			</tr>
 			{% endif %}
 			{% endfor %}
