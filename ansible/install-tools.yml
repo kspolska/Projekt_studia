@@ -1,0 +1,49 @@
+---
+- name: Install required tools
+  hosts: localhost
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Install Git
+    yum:
+      name: git
+      state: latest
+  
+  - name: Install PostgreSQL server
+    yum:
+      name: postgresql-server,postgresql-contrib
+      state: latest
+    register: postgresqlserver
+
+  - name: Create PostgreSQL data cluster
+    command: postgresql-setup initdb
+    when: postgresqlserver.changed
+
+  - name: Install PostgreSQL tools
+    yum:
+       name: postgresql,postgresql-contrib, python-psycopg2, python3-psycopg2
+       state: latest
+
+  - name: Install Python3
+    yum:
+      name: python3
+      state: latest
+
+  - name: Install Django libraries
+    yum:
+      name: "python3-django*"
+      state: latest
+
+  - name: Install BeautifulSoup libraries
+    yum:
+      name: python-beautifulsoup4
+      state: latest
+
+  - name: Install Numpy libraries
+    yum:
+      name: python36-numpy
+      state: latest
+
+      

@@ -1,0 +1,80 @@
+---
+- name: Configure PostgreSQL database
+  hosts: localhost
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+
+  tasks:
+  - name: Allow database access with password
+    lineinfile:
+      path: /var/lib/pgsql/data/pg_hba.conf
+      regexp: '^local.*all.*md5'
+      line: 'local   all             all                                     md5'
+      state: present
+    register: postgresqlserver
+
+  - name: Allow database access without password for postgres user
+    lineinfile:
+      path: /var/lib/pgsql/data/pg_hba.conf
+      regexp: '^local.*postgres.*peer'
+      line: 'local   all             postgres                                peer'
+      insertbefore: '^local.*all.*md5'
+      state: present
+    register: postgresqlserver
+
+  - name: Allow database access with password for localhost IPv4
+    lineinfile:
+      path: /var/lib/pgsql/data/pg_hba.conf
+      regexp: '^host.*127.0.0.1/32.*ident'
+      line: 'host    all             all             127.0.0.1/32            md5'
+      state: present
+    register: postgresqlserver
+
+  - name: Allow database access with password for localhost IPv6
+    lineinfile:
+      path: /var/lib/pgsql/data/pg_hba.conf
+      regexp: '^host.*::1/128.*ident'
+      line: 'host    all             all             ::1/128                 md5'
+      state: present
+    register: postgresqlserver
+
+  - name: Restart PostgreSQL database if changed
+    service:
+      name: postgresql
+      state: restarted
+    when: postgresqlserver.changed
+    
+  - name: Ensure that PostgreSQL database is up
+    service:
+      name: postgresql
+      state: started
+
+  - block:
+    - name: Create a new database with name "projekt"
+      postgresql_db:
+        name: projekt
+      register: newdatabase
+
+    - name: Connect to "projekt" database, create service user and grant access to database
+      postgresql_user:
+        db: projekt
+        name: django
+        password: changeit
+        priv: "ALL"
+        expires: "infinity"
+
+    - name: Make django user owner of database
+      postgresql_query:
+        db: projekt
+        path_to_script: /repos/Projekt_studia/baza/DB/grant_accesses.sql
+
+    - name: Run queries from SQL script
+      postgresql_query:
+        db: projekt
+        path_to_script: /repos/Projekt_studia/baza/DB/sql-fina.sql
+      when: newdatabase.changed
+
+    become_user: postgres
+
