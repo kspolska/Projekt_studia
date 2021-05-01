@@ -4,3 +4,5 @@
 *.pyc
 /vagrant/.vagrant
 .vs
+projekt_sublime.sublime-project
+projekt_sublime.sublime-workspace
