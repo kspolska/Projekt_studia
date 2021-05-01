@@ -39,15 +39,17 @@ def rocznik(request , lata):
 	results=Ustawy.objects.all()
 	return render(request, 'Ustawy_roczniki.html', {"data":results , "rokcznik":lata})
 
-def glosowanie(request):
-	form = GlosyForm()
-	print('TEST!!!!!!!!!!:')
-	#if request.method == 'POST':
-	print('Printing POST:', request.POST)
-	form = GlosyForm(request.POST)
-	if form.is_valid():
-		print('Udalo sie!!!!!!!!!!:')
-		form.save()
-		return redirect ('/')
-	context = {'form1':form}
+def glosowanie(request, id):
+	ustawy=Ustawy.objects.get(index=id)
+	form = GlosyForm(instance=ustawy)
+	if request.method == 'POST':
+		print('Printing POST:', request.POST)
+		form = GlosyForm(request.POST)
+		print('Udalo sie?????????????:')
+		if form.is_valid():
+			print('Udalo sie!!!!!!!!!!:')
+			form.save()
+			return redirect ('/')
+
+	context = {'form':form}
 	return render(request, 'oddajglos.html',context)

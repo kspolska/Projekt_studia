@@ -11,7 +11,9 @@ class Ustawy(models.Model):
 
 	class Meta:
 		db_table="ustawy"
- 
+
+
+
 class Dane_osoba(models.Model):
 	id_osoby=models.IntegerField(primary_key=True)
 	imie=models.CharField(max_length=30, null=True)
@@ -25,10 +27,12 @@ class Dane_osoba(models.Model):
 	class Meta:
 		db_table="dane_osoba"
 
+
 class Glosy(models.Model):	
 	id_glosu=models.IntegerField(primary_key=True)
 	ustawa=models.ForeignKey(Ustawy, null=True, on_delete=models.SET_NULL)
 	glosujacy=models.ForeignKey(Dane_osoba, null=True, on_delete=models.SET_NULL)
+
 	class Meta:
 		db_table="glosy"
 

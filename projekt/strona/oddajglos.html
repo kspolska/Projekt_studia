@@ -1,11 +1,13 @@
 {% extends 'main_base_page.html' %}
+{% load static %}
 {% block content %}	
 
-<from action="" method="POST">
-	{% csrf_token %}
-	{{form1}}
-	<input  method="POST" type="submit" name="Submit">
-</from>
+{% csrf_token %}
+<form method="POST">
+	
+	{{form}}
+	<input  type="submit" value="Vote" name="Submit">
+</form>
 
 
 

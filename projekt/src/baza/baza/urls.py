@@ -32,7 +32,7 @@ urlpatterns = [
     path('Omnie', views.Omnie, name='omnie'),
     path('Kontakt', views.Kontakt, name='kontakt'),
     path('rocznik/<int:lata>/', views.rocznik, name='latapodstrony'),
-    path('glosowanie', views.glosowanie, name="Glosowanie"),
+    path('glosowanie/<int:id>/', views.glosowanie, name="Glosowanie"),
 
 
 ]

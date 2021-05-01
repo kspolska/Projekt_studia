@@ -17,7 +17,7 @@
 				<td  ><a href={{result.link}} >link do dokumentu </a> </td>
 				<td>{{result.tytul}}</td>
 				<td >
-					<button ><a href = "{% url 'Glosowanie' %}">Zaglosuj</a></button>
+					<button ><a href = "{% url 'Glosowanie' result.index  %}">Zaglosuj</a></button>
 				<!-- <input  action= ""  method="POST" type="submit" name="zaglosuj">-->
 				</td>
 			</tr>
