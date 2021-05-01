@@ -1,6 +1,6 @@
-CREATE TABLE "ustawy" (
+﻿CREATE TABLE "ustawy" (
 	"index" serial NOT NULL,
-	"rok" DATE NOT NULL,
+	"rok" integer NOT NULL,
 	"nr_ustawy" integer NOT NULL,
 	"tytul" TEXT NOT NULL,
 	"link" TEXT NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE "dane_osoba" (
 	"id_osoby" serial NOT NULL,
 	"imie" VARCHAR(30) NOT NULL,
 	"nazwisko" VARCHAR(50) NOT NULL,
-	"Has�o" VARCHAR(50) NOT NULL,
+	"haslo" VARCHAR(50) NOT NULL,
 	"data_urodzenia" DATE NOT NULL,
 	"e-mail" VARCHAR(70) NOT NULL,
 	"nr_telefonu" integer NOT NULL,
@@ -33,9 +33,6 @@ CREATE TABLE "glosy" (
 	"id_glosu" serial NOT NULL,
 	"ustawa" integer NOT NULL,
 	"glosujacy" integer NOT NULL,
-	"glos_tak" BOOLEAN NOT NULL,
-	"glos_nie" BOOLEAN NOT NULL,
-	"glos_wstrzymany" BOOLEAN NOT NULL,
 	CONSTRAINT "glosy_pk" PRIMARY KEY ("id_glosu")
 ) WITH (
   OIDS=FALSE

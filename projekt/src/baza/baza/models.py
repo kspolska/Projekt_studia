@@ -15,7 +15,7 @@ class Ustawy(models.Model):
 
 
 class Dane_osoba(models.Model):
-	id_osoby=models.IntegerField(primary_key=True)
+	id_osoby=models.AutoField(primary_key=True)
 	imie=models.CharField(max_length=30, null=True)
 	nazwisko=models.CharField(max_length=50, null=True)
 	haslo=models.CharField(max_length=50, null=True)
@@ -29,9 +29,9 @@ class Dane_osoba(models.Model):
 
 
 class Glosy(models.Model):	
-	id_glosu=models.IntegerField(primary_key=True)
-	ustawa=models.ForeignKey(Ustawy, null=True, on_delete=models.SET_NULL)
-	glosujacy=models.ForeignKey(Dane_osoba, null=True, on_delete=models.SET_NULL)
+	id_glosu=models.AutoField(primary_key=True)
+	ustawa=models.ForeignKey(Ustawy, null=True, on_delete=models.SET_NULL, db_column='ustawa')
+	glosujacy=models.ForeignKey(Dane_osoba, null=True, on_delete=models.SET_NULL, db_column='glosujacy')
 
 	class Meta:
 		db_table="glosy"

@@ -30,7 +30,6 @@ CREATE TABLE "dane_osoba" (
 
 
 CREATE TABLE "glosy" (
-	"id_glosu" serial NOT NULL,
 	"ustawa" integer NOT NULL,
 	"glosujacy" integer NOT NULL,
 	CONSTRAINT "glosy_pk" PRIMARY KEY ("id_glosu")
