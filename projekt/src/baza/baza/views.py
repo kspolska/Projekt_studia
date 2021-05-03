@@ -54,7 +54,7 @@ def glosowanie(request, id):
 		results = cursor.fetchall()
 		check=results[0][0]
 	if(results[0][0] > 0):
-		print("Nie wolno jemu")
+		print("Brak mozliwosci glosowania")
 
 
 	#Dodanie do requesta znanych wczesniej wartosci
@@ -93,3 +93,8 @@ def glosowanie(request, id):
 
 	return render(request, 'oddajglos.html', context)
 
+def Wyniki_glosowania(request, id):
+	ust=Ustawy.objects.get(index=id)
+	wynik=Wyniki.objects.get(ustawa=ust)
+	
+	return render(request, "Wyniki_glosowania.html", {'wyniki':wynik , 'ust':ust} )

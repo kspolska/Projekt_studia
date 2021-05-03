@@ -4,22 +4,26 @@
 	
 		<thead>
 			<tr>
-				<th style="width: 12em">Pozycja</th>				
+				<th center style="width: 11em">Pozycja</th>				
 				<th center>Treść ustawy</th>
 				<th class="sortable asc" data-name="title">Tytuł</th>
-				<th center> Glosowanie</th>
+				<th center> Glosuj</th>
+				<th center>Wyniki</th>
 			</tr>
 	
 					{% for result in data %}
 					{% if result.rok == rokcznik %}
 			<tr>
-				<td>Dz.U. {{result.rok}} poz. {{result.nr_ustawy}}</td>			
-				<td  ><a href={{result.link}} >link do dokumentu </a> </td>
+				<td ><center>Dz.U. {{result.rok}} poz. {{result.nr_ustawy}}</td>			
+				<td  ><a href={{result.link}} ><center>link do dokumentu </a> </td>
 				<td>{{result.tytul}}</td>
 				<td >
-					<button ><a href = "{% url 'Glosowanie' result.index  %}">Zaglosuj</a></button>
-				<!-- <input  action= ""  method="POST" type="submit" name="zaglosuj">-->
+					<center><button ><a href = "{% url 'Glosowanie' result.index  %}">Zaglosuj</a></button>
 				</td>
+				<td >
+					<center><button ><a href = "{% url 'Wyniki_glosowania' result.index  %}">Wyniki</a></button>
+				</td>
+
 			</tr>
 			{% endif %}
 			{% endfor %}

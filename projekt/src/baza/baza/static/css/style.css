@@ -4,10 +4,11 @@ body {
 	
 }
 .container {
-	width: 406px;
-	max-width: 406px;
+	width: 506px;
+	max-width: 806px;
 	margin: 0 auto;	
 }
+
 .container2 {
 
 	width: 686px;
@@ -74,7 +75,7 @@ body {
 		0px 0px 0px 5px rgba(255,255,255,0.4),
 		10px 4px 20px rgba(0,0,0,0.33);
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5xp;
+	-webkit-border-radius: 5px;
 	border-radius: 5px;
 	display: table;
 	position: static;
@@ -82,15 +83,19 @@ body {
     transform: translate(-15%, -3%)
 }
 #lista_ustaw {
-	padding: 1px 1px 1px 1px;
+	padding: 22px 75px 20px;	
 	background: #FFF;
 	box-shadow:
 		0px 0px 0px 5px rgba(255,255,255,0.4),
 		10px 4px 20px rgba(0,0,0,0.33);
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	border-radius: 5px;
+	display: table;
 	position: static;
-	margin-right: -10%;
+    margin-right: -50%;
+    transform: translate(-15%, -0%)
+
 
 }
 #konto .daneform label  {

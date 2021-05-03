@@ -1,0 +1,41 @@
+{% extends 'main_base.html' %}
+{% block content %}
+
+<br>
+<br>
+<a href="{{ust.link}}">{{ust.tytul}}</a>
+
+<br>
+<br>
+
+		<center><div id="piechart"></div>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+		<script type="text/javascript">
+			google.charts.load('current', {'packages':['corechart']});
+			google.charts.setOnLoadCallback(drawChart);
+		
+			function drawChart() {
+  			var data = google.visualization.arrayToDataTable([
+  ['Osoby', 'Głosy'],
+  ['Za', {{wyniki.wynik_tak}} ],
+  ['Przeciw', {{wyniki.wynik_nie}} ],
+  ['Wstrzymaly sie', {{wyniki.wynik_wstrzymany}} ],
+]);
+
+
+  var options = {'title':'Wyniki głosowania', 'width':650, 'height':500};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script>
+	</center>
+	<h6>
+Łączna liczba głosów to: <br>
+Za :  {{wyniki.wynik_tak}}<br>
+Przeciw:  {{wyniki.wynik_nie}}<br>
+Wstrzymał się : {{wyniki.wynik_wstrzymany}}<br>
+
+{% endblock %}
