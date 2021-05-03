@@ -15,3 +15,8 @@ class GlosyForm(forms.ModelForm):
 	class Meta:
 		model=Glosy
 		fields = '__all__'
+
+class WynikiForm(forms.ModelForm):
+	class Meta:
+		model=Wyniki
+		fields = '__all__'

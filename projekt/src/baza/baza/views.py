@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.http import HttpResponse
-from .forms import Dane_osoba
-from .forms import GlosyForm
+from .forms import *
 
 def home_view(request):
 	 return HttpResponse("Hello!") 
@@ -39,14 +38,37 @@ def rocznik(request , lata):
 	results=Ustawy.objects.all()
 	return render(request, 'Ustawy_roczniki.html', {"data":results , "rokcznik":lata})
 
+
+# działające dodawnie do bazy danych
 def glosowanie(request, id):
-	#ustawy=Ustawy.objects.get(index=id)
+	ustawy=Ustawy.objects.get(index=id)
 	form = GlosyForm(request.POST or None)
 	if request.method == 'POST':
+		form = GlosyForm(request.POST or None)
 		print('Printing POST:', request.POST)
 		if form.is_valid():
 			form.save()
 			return redirect ('/StronaGlowna')
 
 	context = {'form':form}
-	return render(request, 'oddajglos.html',context)
+
+	return render(request, 'oddajglos.html',context )
+
+# aktualizowanie bazy tabeli wyniki
+def glosowanie2(request, id):
+	ustawy=Wyniki.objects.get(id_wyniku=id)
+	form = WynikiForm(instance=ustawy)
+
+	if request.method == 'POST':
+		form = WynikiForm(request.POST or None , instance=ustawy)
+		print('Printing POST:', request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect ('/StronaGlowna')
+
+	context = {'form':form}
+
+	return render(request, 'oddajglos.html',context )
+
+
+#próba połączenia powyższych metod

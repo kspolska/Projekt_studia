@@ -9,6 +9,9 @@ class Ustawy(models.Model):
 	link=models.TextField(null=True)
 	nr_importu=models.IntegerField(null=True)
 
+	def __str__(self):
+		return str(self.index)
+
 	class Meta:
 		db_table="ustawy"
 
@@ -24,6 +27,9 @@ class Dane_osoba(models.Model):
 	nr_telefonu=models.IntegerField()
 	plec=models.BooleanField(null=True)
 	PESEL=models.TextField(null=True)
+	
+	def __str__(self):
+		return '%s %s' % (self.imie, self.nazwisko)
 	class Meta:
 		db_table="dane_osoba"
 
@@ -33,12 +39,14 @@ class Glosy(models.Model):
 	ustawa=models.ForeignKey(Ustawy, null=True, on_delete=models.SET_NULL, db_column='ustawa')
 	glosujacy=models.ForeignKey(Dane_osoba, null=True, on_delete=models.SET_NULL, db_column='glosujacy')
 
+	def __str__(self):
+		return str(self.ustawa.index)
 	class Meta:
 		db_table="glosy"
 
 class Wyniki(models.Model):
 	id_wyniku=models.IntegerField(primary_key=True)
-	ustawa=models.ForeignKey(Ustawy, null=True, on_delete=models.SET_NULL)
+	ustawa=models.ForeignKey(Ustawy, null=True, on_delete=models.SET_NULL, db_column='ustawa')
 	wynik_tak=models.IntegerField(null=True)
 	wynik_nie=models.IntegerField(null=True)
 	wynik_wstrzymany=models.IntegerField(null=True)
