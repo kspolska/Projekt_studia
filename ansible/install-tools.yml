@@ -38,12 +38,17 @@
 
   - name: Install BeautifulSoup libraries
     yum:
-      name: python-beautifulsoup4
+      name: python36-beautifulsoup4
       state: latest
 
   - name: Install Numpy libraries
     yum:
       name: python36-numpy
+      state: latest
+
+  - name: Install other libraries
+    yum:
+      name: python36-requests
       state: latest
 
       

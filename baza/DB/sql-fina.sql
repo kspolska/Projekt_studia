@@ -1,4 +1,4 @@
-﻿CREATE TABLE "ustawy" (
+CREATE TABLE "ustawy" (
 	"index" serial NOT NULL,
 	"rok" integer NOT NULL,
 	"nr_ustawy" integer NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE "dane_osoba" (
 	"nazwisko" VARCHAR(50) NOT NULL,
 	"haslo" VARCHAR(50) NOT NULL,
 	"data_urodzenia" DATE NOT NULL,
-	"e-mail" VARCHAR(70) NOT NULL,
+	"email" VARCHAR(70) NOT NULL,
 	"nr_telefonu" integer NOT NULL,
 	"plec" BOOLEAN NOT NULL,
 	"PESEL" TEXT NOT NULL UNIQUE,
@@ -73,3 +73,4 @@ ALTER TABLE "glosy" ADD CONSTRAINT "glosy_fk1" FOREIGN KEY ("glosujacy") REFEREN
 
 
 ALTER TABLE "wyniki" ADD CONSTRAINT "wyniki_fk0" FOREIGN KEY ("ustawa") REFERENCES "ustawy"("index");
+
