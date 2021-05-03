@@ -4,23 +4,25 @@
 
 
 <form action="." method="post">
-   
-Głosowanie dotyczy : 	{{ustawa.tytul}}
+ <br><br>  
+Głosowanie dotyczy : 	{{dane.tytul}}
 <br>
 
 
 {% csrf_token %}
 
+{% if check == 0 %}
 <p>Jaka jest Twoje opinia:</p>
 <input type="radio" name="glos" value="Za">Za<br>
 <input type="radio" name="glos" value="Przeciw">Przeciw<br>
 <input type="radio" name="glos" value="Wstrzymuje">Wstrzymuje sie<br>
+<input  type="submit" formmethod="post"  name="Submit">
 
-{{form.ustawy}}<br>
-
-{{form}}
-
-	<input  type="submit" formmethod="post"  name="Submit">
+{% else %} 
+<br><br>
+Niestety oddałes już głos na tą ustawę, możesz poowrócić do <a href="{% url 'home_page' %}"> <b> -> Strony głównej </b></a>
+<br><br><br><br><br><br>
+{% endif %}
 
 </form>
 

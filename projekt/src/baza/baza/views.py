@@ -45,12 +45,14 @@ def glosowanie(request, id):
 	id_uzytkownika = str(1)
 	#Numer ustawy na ktora oddany jest glos
 	nr_ustawy=str(Ustawy.objects.get(index=id))
-
+	ustawa=Ustawy.objects.get(index=id)
+	#Sprawdzenie w bazie czy user glosowal
+	check =0
 	query_isdone = "SELECT COUNT(*) FROM glosy WHERE glosujacy = {0} and ustawa = {1}".format(id_uzytkownika, nr_ustawy)
 	with connection.cursor() as cursor:
 		cursor.execute(query_isdone)
 		results = cursor.fetchall()
-		
+		check=results[0][0]
 	if(results[0][0] > 0):
 		print("Nie wolno jemu")
 
@@ -87,65 +89,7 @@ def glosowanie(request, id):
 			instance = form.save()
 			return redirect ('/StronaGlowna')
 
-	context = {'form':form , 'ustawa':nr_ustawy}
+	context = {'form':form , 'ustawa':nr_ustawy, 'dane':ustawa, 'check':check  }
 
-	return render(request, 'oddajglos.html', context )
+	return render(request, 'oddajglos.html', context)
 
-#próba połączenia powyższych metod
-def glosowanie2(request, id):
-	wynik=Wyniki.objects.get(id_wyniku=id)
-	ustawa=Ustawy.objects.get(index=id)
-	#dane=Dane_osoba.objects.get(id_osoby=1)
-	form = WynikiForm(instance=wynik)
-
-	form1 = GlosyForm(request.POST or None)
-	form1.ustawy=id
-	form1.glosujacy= 1
-	
-	if request.method == 'POST':		
-		form1 = GlosyForm(request.POST or None)
-		if form1.is_valid():
-			form1.save()	
-	if request.method == 'POST':
-		#form = GlosyForm(request.POST or None)
-		print('Printing POST:', request.POST)
-		if "Za" in str(request.POST):
-			query = "UPDATE wyniki set wynik_tak = wynik_tak + 1 where ustawa = "+ str(ustawy)
-			with connection.cursor() as cursor:
-				cursor.execute(query)
-			print("Za!")
-		if "Przeciw" in str(request.POST):
-			query = "UPDATE wyniki set wynik_nie = wynik_nie + 1 where ustawa = "+ str(ustawy)
-			with connection.cursor() as cursor:
-				cursor.execute(query)
-			print("Przeciw!")
-		if "Wstrzymuje" in str(request.POST):
-			print("Wstrzymuje!")
-			query = "UPDATE wyniki set wynik_wstrzymany = wynik_wstrzymany + 1 where ustawa = "+ str(ustawy)
-			with connection.cursor() as cursor:
-				cursor.execute(query)
-
-		if form.is_valid():
-			form.save()
-			return redirect ('/StronaGlowna')
-
-	context = {'form':form , 'form1':form1 ,'ustawa':ustawa}
-
-	return render(request, 'oddajglos.html',context )
-
-# aktualizowanie bazy tabeli wyniki
-
-def glosowanie3(request, id):
-	ustawy=Wyniki.objects.get(id_wyniku=id)
-	form = WynikiForm(instance=ustawy)
-
-	if request.method == 'POST':
-		form = WynikiForm(request.POST or None , instance=ustawy)
-		print('Printing POST:', request.POST)
-		if form.is_valid():
-			form.save()
-			return redirect ('/StronaGlowna')
-
-	context = {'form':form}
-
-	return render(request, 'oddajglos.html',context )
