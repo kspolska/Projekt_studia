@@ -13,8 +13,10 @@ class ContactForm(forms.ModelForm):
 
 class GlosyForm(forms.ModelForm):
 	class Meta:
-		model=Glosy
-		fields = '__all__'
+		model = Glosy
+		#Ukryte pola formularza, wartosci sa zdefinowane wczesniej
+		fields = ['ustawa', 'glosujacy']
+		widgets = {'glosujacy': forms.HiddenInput(), 'ustawa': forms.HiddenInput()}
 
 class WynikiForm(forms.ModelForm):
 	class Meta:

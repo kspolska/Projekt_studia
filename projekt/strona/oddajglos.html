@@ -4,10 +4,24 @@
 
 
 <form action="." method="post">
-    {% csrf_token %}
+   
+Głosowanie dotyczy : 	{{ustawa.tytul}}
+<br>
 
-	{{form}}
+
+{% csrf_token %}
+
+<p>Jaka jest Twoje opinia:</p>
+<input type="radio" name="glos" value="Za">Za<br>
+<input type="radio" name="glos" value="Przeciw">Przeciw<br>
+<input type="radio" name="glos" value="Wstrzymuje">Wstrzymuje sie<br>
+
+{{form.ustawy}}<br>
+
+{{form}}
+
 	<input  type="submit" formmethod="post"  name="Submit">
+
 </form>
 
 

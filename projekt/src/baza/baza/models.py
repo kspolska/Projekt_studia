@@ -40,7 +40,7 @@ class Glosy(models.Model):
 	glosujacy=models.ForeignKey(Dane_osoba, null=True, on_delete=models.SET_NULL, db_column='glosujacy')
 
 	def __str__(self):
-		return str(self.ustawa.index)
+		return str(self.ustawa.index) 
 	class Meta:
 		db_table="glosy"
 
