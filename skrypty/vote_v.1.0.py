@@ -10,7 +10,7 @@ csv_file = open('/tmp/zapis2.csv', 'w')
 csv_writer = csv.writer(csv_file)
 csv_writer.writerow(['klucz','rok','nr_ustawy', 'tytul', 'link'])
 #rok od ktorego zaczyna skanowanie
-x = 2020
+x = 2013
 #rok konca skanowania
 while x<=2021 :
   
