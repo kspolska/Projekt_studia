@@ -21,15 +21,15 @@ class Dane_osoba(models.Model):
 	id_osoby=models.AutoField(primary_key=True)
 	imie=models.CharField(max_length=30, null=True)
 	nazwisko=models.CharField(max_length=50, null=True)
+	user=models.CharField(max_length=30, null=True)
 	haslo=models.CharField(max_length=50, null=True)
 	data_urodzenia=models.DateField(null=True)
 	email=models.CharField(max_length=70, null=True)
-	nr_telefonu=models.IntegerField()
-	plec=models.BooleanField(null=True)
-	PESEL=models.TextField(null=True)
+	nr_telefonu=models.CharField(max_length=9, null=True)
+	PESEL=models.CharField(max_length=11, null=True)
 	
 	def __str__(self):
-		return '%s %s' % (self.imie, self.nazwisko)
+		return str(self.ustawa.index) 
 	class Meta:
 		db_table="dane_osoba"
 

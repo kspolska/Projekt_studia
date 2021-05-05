@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Zakłądanie konta</title>
+	<link rel ="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+</head>
+
+<div class="container">
+	<form  id="konto" action="." method="POST">
+		{% csrf_token %}
+		<div class="header">
+			<h3>Stwóz konto</h3>
+			<p>Podaj swoje dane</p>
+		</div>
+		<div class="daneform">
+			<label for="imie">Imie:</label><br>
+			{{data.imie}}<br><br>
+			<label for="nazwisko">Nazwisko:</label><br>
+			{{data.nazwisko}}<br><br>
+			<label for="nazwa_uzytkownika">Nazwa użytkownika:</label><br>
+			{{data.user}}<br><br>
+			<label for="pwd">Haslo:</label><br>
+			{{data.haslo}}<br><br>
+			<label for="data_urodzenia">Data urodzenia:</label><br>
+			{{data.data_urodzenia}}<br><br>
+			<label for="email">Email:</label><br>
+			{{data.email}}<br><br>
+			<label for="phone">Numer telefonu:</label><br>
+			{{data.nr_telefonu}}<br><br>
+			<label for="pesel"> Pesel:</label><br>
+			{{data.PESEL}}
+			<br><br>
+			<input type="submit" formmethod="POST"  name="Submit">	
+		</div>
+	</form>
+</div>
+</html>

@@ -14,8 +14,47 @@ def StronaGlowna(request):
 	return render(request, "StronaGlowna.html")
 
 def zakladanie_konta(request):
-	results=Dane_osoba.objects.all()
-	return render(request, "zakladanie_konta.html",{"data":results})
+	form=ContactForm()
+	if request.method == 'POST':
+		kopia_request = request.POST.copy()
+		csrfmiddlewaretoken = kopia_request['csrfmiddlewaretoken']
+
+
+
+
+
+		imie = kopia_request['imie']
+		nazwisko = kopia_request['nazwisko']
+		haslo = kopia_request['haslo']
+		data_urodzenia_month = kopia_request['data_urodzenia_month']
+		data_urodzenia_day = kopia_request['data_urodzenia_day']
+		data_urodzenia_year = kopia_request['data_urodzenia_year']
+		email = kopia_request['email']
+		nr_telefonu = kopia_request['nr_telefonu']
+		PESEL = kopia_request['PESEL']
+		if(len(str(data_urodzenia_month))==1 and len(str(data_urodzenia_day))==1):
+			data_uro = str(data_urodzenia_year)+'-0'+str(data_urodzenia_month)+'-0'+str(data_urodzenia_day)
+		if (len(str(data_urodzenia_month))==1 and len(str(data_urodzenia_day))>1):
+			data_uro = str(data_urodzenia_year)+'-0'+str(data_urodzenia_month)+'-'+str(data_urodzenia_day)
+		if(len(str(data_urodzenia_month))>1 and len(str(data_urodzenia_day))==1):
+			data_uro = str(data_urodzenia_year)+'-'+str(data_urodzenia_month)+'-0'+str(data_urodzenia_day)
+		if(len(str(data_urodzenia_month))>1 and len(str(data_urodzenia_day))>1):
+			data_uro = str(data_urodzenia_year)+'-'+str(data_urodzenia_month)+'-'+str(data_urodzenia_day)
+		kopia_request.pop('data_urodzenia_month')
+		kopia_request.pop('data_urodzenia_day')
+		kopia_request.pop('data_urodzenia_year')
+		kopia_request['data_urodzenia']=data_uro
+
+		request.POST=kopia_request
+		print(request.POST)
+
+		form=ContactForm(data = request.POST)
+
+		print(form.errors)
+		if form.is_valid():
+			form.save()
+			print("user zapisany")
+	return render(request, "zakladanie_konta.html",{"data":form})
 
 def Statystyki(request):
 	return render(request, "Statystyki.html")

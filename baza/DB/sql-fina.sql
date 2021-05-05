@@ -16,13 +16,13 @@ CREATE TABLE "dane_osoba" (
 	"id_osoby" serial NOT NULL,
 	"imie" VARCHAR(30) NOT NULL,
 	"nazwisko" VARCHAR(50) NOT NULL,
+	"user" VARCHAR(30) NOT NULL,
 	"haslo" VARCHAR(50) NOT NULL,
 	"data_urodzenia" DATE NOT NULL,
 	"email" VARCHAR(70) NOT NULL,
-	"nr_telefonu" integer NOT NULL,
-	"plec" BOOLEAN NOT NULL,
-	"PESEL" TEXT NOT NULL UNIQUE,
-	CONSTRAINT "dane_osoba_pk" PRIMARY KEY ("id_osoby")
+	"nr_telefonu" VARCHAR(9) NOT NULL,
+	"PESEL" VARCHAR(11) NOT NULL,
+	CONSTRAINT "dane_osoba_pk" PRIMARY KEY ("id_osoby"),
 ) WITH (
   OIDS=FALSE
 );
