@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-
 def Start(request):
 	print('test1')
 	if request.method == 'POST':
@@ -224,7 +223,8 @@ def zakladanie_konta(request):
 
 		
 		if form.is_valid():
-			
+
+
 			form.save()
 			print("user zapisany")
 
