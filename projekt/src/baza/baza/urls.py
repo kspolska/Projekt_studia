@@ -34,5 +34,6 @@ urlpatterns = [
     path('rocznik/<int:lata>/', views.rocznik, name='latapodstrony'),
     path('glosowanie/<str:id>/', views.glosowanie, name="Glosowanie"),
     path('Wyniki/<str:id>/', views.Wyniki_glosowania, name="Wyniki_glosowania"),
+    path('blad/', views.blad, name="Blad"),
 
 ]

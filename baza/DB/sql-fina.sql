@@ -21,8 +21,8 @@ CREATE TABLE "dane_osoba" (
 	"data_urodzenia" DATE NOT NULL,
 	"email" VARCHAR(70) NOT NULL,
 	"nr_telefonu" VARCHAR(9) NOT NULL,
-	"PESEL" VARCHAR(11) NOT NULL,
-	CONSTRAINT "dane_osoba_pk" PRIMARY KEY ("id_osoby"),
+	"pesel" VARCHAR(11) NOT NULL,
+	CONSTRAINT "dane_osoba_pk" PRIMARY KEY ("id_osoby")
 ) WITH (
   OIDS=FALSE
 );

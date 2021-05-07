@@ -18,7 +18,7 @@ class ContactForm(forms.ModelForm):
 		regex =re.compile("\d(9)")
 		model = Dane_osoba
 
-		fields  = ['imie','nazwisko','user','haslo','data_urodzenia','email','nr_telefonu','PESEL']
+		fields  = ['imie','nazwisko','user','haslo','data_urodzenia','email','nr_telefonu','pesel']
 
 		widgets = {'haslo':forms.PasswordInput(), 'data_urodzenia':forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES), 'email':forms.EmailInput, }
 

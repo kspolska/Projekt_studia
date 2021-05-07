@@ -26,7 +26,7 @@ class Dane_osoba(models.Model):
 	data_urodzenia=models.DateField(null=True)
 	email=models.CharField(max_length=70, null=True)
 	nr_telefonu=models.CharField(max_length=9, null=True)
-	PESEL=models.CharField(max_length=11, null=True)
+	pesel=models.CharField(max_length=11, null=True)
 	
 	def __str__(self):
 		return str(self.ustawa.index) 
