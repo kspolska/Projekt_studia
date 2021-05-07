@@ -7,7 +7,10 @@
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
 </head>
 <div class="container2">	
-	<form id="konto">			
+	<form id="konto">
+		<p style="text-align: right">Witaj, {{request.user}} 
+			<a href="{% url 'wyloguj' %}" style="color:blue"> Wyloguj</a>
+		</p>			
 		<nav class="w3-bar w3-black">
 			<img class="mySlides2" src="{% static 'photo/0.png' %}" style="width:100%">
 			<a href="{% url 'home_page' %}" class="w3-button w3-bar-item">Home</a>

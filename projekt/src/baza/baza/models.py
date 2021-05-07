@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Ustawy(models.Model):
 
@@ -18,10 +19,10 @@ class Ustawy(models.Model):
 
 
 class Dane_osoba(models.Model):
-	id_osoby=models.AutoField(primary_key=True)
+	id=models.OneToOneField(User, on_delete=models.CASCADE, db_column='id', primary_key=True)
 	imie=models.CharField(max_length=30, null=True)
 	nazwisko=models.CharField(max_length=50, null=True)
-	user=models.CharField(max_length=30, null=True)
+	user=models.CharField(max_length=50, null=True)
 	haslo=models.CharField(max_length=250, null=True)
 	data_urodzenia=models.DateField(null=True)
 	email=models.CharField(max_length=70, null=True)

@@ -7,6 +7,7 @@ import re
 
 
 class ContactForm(forms.ModelForm):
+	user = forms.CharField()
 	class Meta:
 		#tworzenie daty 
 		BIRTH_YEAR_CHOICES = []
@@ -18,9 +19,9 @@ class ContactForm(forms.ModelForm):
 		regex =re.compile("\d(9)")
 		model = Dane_osoba
 
-		fields  = ['imie','nazwisko','user','haslo','data_urodzenia','email','nr_telefonu','pesel']
+		fields  = [ 'id','imie','nazwisko','user','haslo','data_urodzenia','email','nr_telefonu','pesel']
 
-		widgets = {'haslo':forms.PasswordInput(), 'data_urodzenia':forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES), 'email':forms.EmailInput, }
+		widgets = {'id': forms.HiddenInput(), 'haslo':forms.PasswordInput(), 'data_urodzenia':forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES), 'email':forms.TextInput }
 
 
 

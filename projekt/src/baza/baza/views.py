@@ -6,7 +6,7 @@ from django.db import connection
 from django.contrib.auth import	authenticate, login, logout
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
-
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 
@@ -16,19 +16,22 @@ def Start(request):
 		
 		username = request.POST.get('user')
 		password = request.POST.get('haslo')
-		password = make_password(password)
 		print('username',username)
 		print('password',password)
 		user = authenticate(request	, username=username, password=password)
 		print('user',user)
 		if user is not None:
 			login(request, user)
-			return redirect('StronaGlowna')
+			return redirect('home_page')
 		else:
 			messages.info(request, ' Nazwa urzydkownika lub haslo nie poprawne!')
 	context ={}
 	return render(request, "Start.html", context)
 
+
+def wyloguj(request):
+	logout(request)
+	return redirect('home')
 
 @login_required(login_url='home')
 def StronaGlowna(request):
@@ -37,9 +40,19 @@ def StronaGlowna(request):
 def zakladanie_konta(request):
 	form=ContactForm()
 	if request.method == 'POST':
+
 		kopia_request = request.POST.copy()
 		csrfmiddlewaretoken = kopia_request['csrfmiddlewaretoken']
 
+		# Walidacja nazwy usera
+		username=kopia_request['user']
+		query_user = "SELECT  dane_osoba.user FROM dane_osoba where dane_osoba.user = '{0}'".format(username)
+		with connection.cursor() as cursor:
+			cursor.execute(query_user)
+			results_user = cursor.fetchall()
+		if(len(results_user) > 0):
+			error_message ="Podany user już istnieje"
+			return blad(request, error_message)
 
 
 
@@ -72,16 +85,7 @@ def zakladanie_konta(request):
 		print(check_password(haslo,kopia_request['haslo']))  # returns True
 		print(kopia_request['haslo'])
 
-		# Walidacja nazwy usera
-		user=kopia_request['user']
-
-		query_user = "SELECT  dane_osoba.user FROM dane_osoba where dane_osoba.user = '{0}'".format(user)
-		with connection.cursor() as cursor:
-			cursor.execute(query_user)
-			results_user = cursor.fetchall()
-		if(len(results_user) > 0):
-			error_message ="Podany user już istnieje"
-			return blad(request, error_message)
+		
 
 		# przygotowywanie daty urodzenia do wstawienia go w formularz
 		data_urodzenia_month = kopia_request['data_urodzenia_month']
@@ -207,15 +211,24 @@ def zakladanie_konta(request):
 			error_message ="PESEL jest niezgodny z datą urodzenia4 !"
 			return blad(request, error_message)
 
+		
+		user = User.objects.create_user(username, first_name=imie, last_name=nazwisko, email=email, password=haslo)
+		user_id = User.objects.get(username=username).pk
+		print(user_id)
+
+		kopia_request['id'] = user_id
+
 		request.POST=kopia_request
-
-
 		form=ContactForm(data = request.POST)
-
 		print(form.errors)
+
+		
 		if form.is_valid():
+			
 			form.save()
 			print("user zapisany")
+
+
 			return Utworzono(request)
 
 	return render(request, "zakladanie_konta.html",{"data":form})
@@ -260,7 +273,7 @@ def rocznik(request , lata):
 @login_required(login_url='home')
 # działające dodawnie do bazy danych
 def glosowanie(request, id):
-	id_uzytkownika = str(1)
+	id_uzytkownika = request.user.id
 	#Numer ustawy na ktora oddany jest glos
 	nr_ustawy=str(Ustawy.objects.get(index=id))
 	ustawa=Ustawy.objects.get(index=id)
