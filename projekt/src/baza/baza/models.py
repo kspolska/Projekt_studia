@@ -22,7 +22,7 @@ class Dane_osoba(models.Model):
 	imie=models.CharField(max_length=30, null=True)
 	nazwisko=models.CharField(max_length=50, null=True)
 	user=models.CharField(max_length=30, null=True)
-	haslo=models.CharField(max_length=50, null=True)
+	haslo=models.CharField(max_length=250, null=True)
 	data_urodzenia=models.DateField(null=True)
 	email=models.CharField(max_length=70, null=True)
 	nr_telefonu=models.CharField(max_length=9, null=True)

@@ -15,6 +15,27 @@ body {
 	max-width: 806px;
 	margin: 0 auto;
 }
+.button {
+  background-color: white;
+  color: black;
+  border: 2px solid #555554;
+}
+
+.button:hover {
+  background-color: #555554;
+  color: white;
+}
+
+.button2 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
 #login {
 	padding: 0px 15px 145px;
 	background: #FFF;

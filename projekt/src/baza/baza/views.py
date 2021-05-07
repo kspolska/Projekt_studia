@@ -3,13 +3,34 @@ from .models import *
 from django.http import HttpResponse
 from .forms import *
 from django.db import connection
+from django.contrib.auth import	authenticate, login, logout
+from django.contrib.auth.hashers import make_password, check_password
+from django.contrib import messages
 
-def home_view(request):
-	 return HttpResponse("Hello!") 
+from django.contrib.auth.decorators import login_required
+
 
 def Start(request):
-	return render(request, "Start.html")
+	print('test1')
+	if request.method == 'POST':
+		
+		username = request.POST.get('user')
+		password = request.POST.get('haslo')
+		password = make_password(password)
+		print('username',username)
+		print('password',password)
+		user = authenticate(request	, username=username, password=password)
+		print('user',user)
+		if user is not None:
+			login(request, user)
+			return redirect('StronaGlowna')
+		else:
+			messages.info(request, ' Nazwa urzydkownika lub haslo nie poprawne!')
+	context ={}
+	return render(request, "Start.html", context)
 
+
+@login_required(login_url='home')
 def StronaGlowna(request):
 	return render(request, "StronaGlowna.html")
 
@@ -43,6 +64,14 @@ def zakladanie_konta(request):
 		if(moc_hasla<3):
 			error_message ="Haslo jest za słabe, pamiętaj o tym aby używać silnych haseł - to takie które zawierają małe i duże litery, znaki specjalne i cyfry!"
 			return blad(request, error_message)
+
+		kopia_request['haslo'] = make_password(haslo)
+
+		print(haslo)
+		#spradzanie hasla
+		print(check_password(haslo,kopia_request['haslo']))  # returns True
+		print(kopia_request['haslo'])
+
 		# Walidacja nazwy usera
 		user=kopia_request['user']
 
@@ -170,8 +199,11 @@ def zakladanie_konta(request):
 		kontrolna = kontrolna +(int(pesel[8])*1)%10
 		kontrolna = kontrolna +(int(pesel[9])*3)%10
 		kontrolna = kontrolna%10
-
-		if not (10-kontrolna == int(pesel[10])):
+		print('10-kontrolna', (10-kontrolna))
+		print('int(pesel[10])', int(pesel[10]))
+		print('(10-kontrolna == int(pesel[10]))%10', (10-kontrolna == int(pesel[10]))%10)
+		if not ((10-kontrolna)%10 == int(pesel[10])):
+			print(kontrolna)
 			error_message ="PESEL jest niezgodny z datą urodzenia4 !"
 			return blad(request, error_message)
 
@@ -182,36 +214,50 @@ def zakladanie_konta(request):
 
 		print(form.errors)
 		if form.is_valid():
-			#form.save()
+			form.save()
 			print("user zapisany")
-	return render(request, "zakladanie_konta.html",{"data":form})
-def blad(request, er):
+			return Utworzono(request)
 
+	return render(request, "zakladanie_konta.html",{"data":form})
+
+
+def blad(request, er):
 	return render(request, "blad.html",{'error':er})
 
+
+def Utworzono(request):
+	return render(request, "utworzono.html")
+
+@login_required(login_url='home')
 def Statystyki(request):
 	return render(request, "Statystyki.html")
 
+@login_required(login_url='home')
 def Roczniki(request):
 	return render(request, "Roczniki.html")
 
+@login_required(login_url='home')
 def Regulamin(request):
 	return render(request, "Regulamin.html")
 
+@login_required(login_url='home')
 def Projekt(request):
 	return render(request, "Projekt.html")
 
+@login_required(login_url='home')
 def Omnie(request):
 	return render(request, "Omnie.html")
 
+@login_required(login_url='home')
 def Kontakt(request):
 	return render(request, "Kontakt.html")
 
+@login_required(login_url='home')
 def rocznik(request , lata):
 	results=Ustawy.objects.all()
 	return render(request, 'Ustawy_roczniki.html', {"data":results , "rokcznik":lata})
 
-
+@login_required(login_url='home')
 # działające dodawnie do bazy danych
 def glosowanie(request, id):
 	id_uzytkownika = str(1)
@@ -265,6 +311,7 @@ def glosowanie(request, id):
 
 	return render(request, 'oddajglos.html', context)
 
+@login_required(login_url='home')
 def Wyniki_glosowania(request, id):
 	ust=Ustawy.objects.get(index=id)
 	wynik=Wyniki.objects.get(ustawa=ust)

@@ -12,21 +12,24 @@
 			<h3>Zaloguj się</h3>
 			<p>Podaj swoje dane logowanie</p>
 		</div>
+		{% csrf_token %}
 		<div class="sep">
 		<div class="inputs">
-			<input name="email" placeholder="Adres e-mail" autofocus />
-			<input type="password" placeholder="Hasło" />
-			<div class="remember">
-				<input name="cecky" id="checke" value="1" type="checkbox" />
-				<label class="terms">Pamiętaj przez 14 dni </label>
-			</div>
-			<a id="submit" href="#">Zaloguj się do panelu</a>
+			<input name="user" placeholder="Nazwa Urzydkownika" autofocus />
+			<input name="haslo" type="password" placeholder="Hasło" />
+			<br>
+			<input class="button button" id="submit" type="submit" value="Login">
 		</div>
 		<div class="butonss">
-		<br>
-		<a href="StronaGlowna"><button type="button">Zaloguj jako gość</button></a>
-		<a href="zakladanie_konta"><button type="button" >Utwórz konto</button></a>
+		
+		<p style="color:black;">Abu utworzyć nowe konto kliknij przycisk</p> 
+		<a href="zakladanie_konta"><button type="button" class="button2 button2" >Utwórz konto</button></a>
+		{% for message in messages %}
+			
+			<p style="color:red;"> {{message}}</p>	
+		{% endfor %}	
 			</div>
+		
 		</div>	
 	</form>
 </div>
