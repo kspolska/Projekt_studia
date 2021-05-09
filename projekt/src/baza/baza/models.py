@@ -19,7 +19,7 @@ class Ustawy(models.Model):
 
 
 class Dane_osoba(models.Model):
-	id=models.OneToOneField(User, on_delete=models.CASCADE, db_column='id', primary_key=True)
+	id=models.OneToOneField(User, on_delete=models.CASCADE, db_column='id_osoby', primary_key=True)
 	imie=models.CharField(max_length=30, null=True)
 	nazwisko=models.CharField(max_length=50, null=True)
 	user=models.CharField(max_length=50, null=True)
@@ -28,6 +28,7 @@ class Dane_osoba(models.Model):
 	email=models.CharField(max_length=70, null=True)
 	nr_telefonu=models.CharField(max_length=9, null=True)
 	pesel=models.CharField(max_length=11, null=True)
+	is_active=models.BooleanField(null=True)
 	
 	def __str__(self):
 		return str(self.ustawa.index) 

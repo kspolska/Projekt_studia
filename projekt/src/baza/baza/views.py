@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from random import seed
+from random import randint
 
 
 def Start(request):
@@ -23,6 +25,9 @@ def Start(request):
 	
 		if user is not None:
 			login(request, user)
+			osoba=Dane_osoba.objects.get(user=username)			
+			if(str(osoba.is_active)=="False"):
+				return redirect('weryfikacja')
 			return redirect('home_page')
 		else:
 			messages.info(request, ' Nazwa urzydkownika lub haslo nie poprawne!')
@@ -212,13 +217,15 @@ def zakladanie_konta(request):
 			error_message ="PESEL jest niezgodny z datą urodzenia !"
 			return blad(request, error_message)
 
-		
+		kopia_request['is_active']=False
+		print(kopia_request)
 		user = User.objects.create_user(username, first_name=imie, last_name=nazwisko, email=email, password=haslo)
 		user_id = User.objects.get(username=username).pk
 		
 		kopia_request['id'] = user_id
 
 		request.POST=kopia_request
+		print(kopia_request)
 		form=ContactForm(data = request.POST)
 
 		if form.is_valid():
@@ -234,51 +241,59 @@ def zakladanie_konta(request):
 def blad(request, er):
 	return render(request, "blad.html",{'error':er})
 
-def Weryfikacja(request, objekt):
+def Weryfikacja_potwierdzenie(request, code):
+	form=Dane_osoba.objects.get(id=request.user.id)	
+	print('udalosie')
+	if request.method == 'POST':
+			klucz = request.POST.get('klucz')
+			key=request.POST.get('key')
+			print(klucz)
+			print(key)
+			if(klucz == key):
+				form.is_active=True
+				if form.is_valid():
+					form.save()
+					return redirect('home_page')
+	return render(request, "weryfikacja.html", {'form1':form})
+
+
+@login_required(login_url='home')
+def Weryfikacja(request):
 	
-	form=ContactForm(data = objekt)
-	port = 465
-	smtp_serwer ="smtp.gmail.com"
-	nadawca = "TwojeReferendum.pl@gmail.com"
-	odbiorca = form['email']
-	haslo ="qsisjvtjgarerfcs"
+	form=Dane_osoba.objects.get(id=request.user.id)	
+	
+	if (str(form.is_active)=="False"):
+		seed(randint(1000,9999))
+		key=randint(1000,9999) 
+		port = 465
+		smtp_serwer ="smtp.gmail.com"
+		nadawca = "TwojeReferendum.pl@gmail.com"
+		odbiorca = form.email
+		haslo ="qsisjvtjgarerfcs"
 
-	wiadomosc = MIMEMultipart("alternative")
-	wiadomosc["Subject"] = "Potwierdz swoj adres email w portalu TwojeReferendum"
-	wiadomosc["From"] = "TwojeReferendum@gmail.com"
-	wiadomosc["To"] = form['email']
-
-
-	text = """\
-	Hi,
-	How are you?
-	"""
-	html = """\
-	<html>
-	  <body>
-	    <p>Hi,<br>
-	       How are you?<br>
-	       <a href="http://www.realpython.com">Real Python</a> 
-	       has many great tutorials.
-	    </p>
-	  </body>
-	</html>
-	"""
-
-	part1 = MIMEText(text, "plain")
-	part2 = MIMEText(html, "html")
-
-	wiadomosc.attach(part1)
-	wiadomosc.attach(part2)
-
-	ssl_pol = ssl.create_default_context()
-	with smtplib.SMTP_SSL(smtp_serwer, port, context=ssl_pol) as serwer:
-		serwer.login(nadawca, haslo)
-		serwer.sendmail(nadawca, odbiorca, wiadomosc.as_string())
-	print('wyslany')
+		wiadomosc = MIMEMultipart("alternative")
+		wiadomosc["Subject"] = "Potwierdz swoj adres email w portalu TwojeReferendum"
+		wiadomosc["From"] = "TwojeReferendum@gmail.com"
+		wiadomosc["To"] = form.email
 
 
-	return render(request, "weryfikacja.html")
+		text = "Klucz weryfikacyjny to :" + str(key)
+		
+		part1 = MIMEText(text, "plain")
+		
+		
+		wiadomosc.attach(part1)
+
+		
+		ssl_pol = ssl.create_default_context()
+		with smtplib.SMTP_SSL(smtp_serwer, port, context=ssl_pol) as serwer:
+			serwer.login(nadawca, haslo)
+			serwer.sendmail(nadawca, odbiorca, wiadomosc.as_string())
+		print('wyslany')
+		return Weryfikacja_potwierdzenie(request,key)
+
+		
+	return render(request, "weryfikacja.html", {'form1':form})
 
 def Utworzono(request):
 	return render(request, "utworzono.html")

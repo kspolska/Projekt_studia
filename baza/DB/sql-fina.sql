@@ -22,6 +22,7 @@ CREATE TABLE "dane_osoba" (
 	"email" VARCHAR(70) NOT NULL,
 	"nr_telefonu" VARCHAR(9) NOT NULL,
 	"pesel" VARCHAR(11) NOT NULL,
+	"is_active" BOOLEAN NOT NULL,
 	CONSTRAINT "dane_osoba_pk" PRIMARY KEY ("id_osoby")
 ) WITH (
   OIDS=FALSE
