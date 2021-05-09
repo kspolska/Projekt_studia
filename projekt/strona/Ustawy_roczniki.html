@@ -15,7 +15,7 @@
 					{% if result.rok == rokcznik %}
 			<tr>
 				<td ><center>Dz.U. {{result.rok}} poz. {{result.nr_ustawy}}</td>			
-				<td  ><a href={{result.link}} ><center>link do dokumentu </a> </td>
+				<td  ><a href={{result.link}} style="color:blue;" ><center>link do dokumentu </a> </td>
 				<td>{{result.tytul}}</td>
 				<td >
 					<center><button ><a href = "{% url 'Glosowanie' result.index  %}">Zaglosuj</a></button>

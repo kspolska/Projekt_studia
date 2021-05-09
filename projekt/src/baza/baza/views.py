@@ -8,17 +8,19 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 
 def Start(request):
-	print('test1')
 	if request.method == 'POST':
 		
 		username = request.POST.get('user')
 		password = request.POST.get('haslo')
-		print('username',username)
-		print('password',password)
+		
 		user = authenticate(request	, username=username, password=password)
-		print('user',user)
+	
 		if user is not None:
 			login(request, user)
 			return redirect('home_page')
@@ -37,6 +39,7 @@ def StronaGlowna(request):
 	return render(request, "StronaGlowna.html")
 
 def zakladanie_konta(request):
+	
 	form=ContactForm()
 	if request.method == 'POST':
 
@@ -206,27 +209,21 @@ def zakladanie_konta(request):
 		print('int(pesel[10])', int(pesel[10]))
 		print('(10-kontrolna == int(pesel[10]))%10', (10-kontrolna == int(pesel[10]))%10)
 		if not ((10-kontrolna)%10 == int(pesel[10])):
-			print(kontrolna)
-			error_message ="PESEL jest niezgodny z datą urodzenia4 !"
+			error_message ="PESEL jest niezgodny z datą urodzenia !"
 			return blad(request, error_message)
 
 		
 		user = User.objects.create_user(username, first_name=imie, last_name=nazwisko, email=email, password=haslo)
 		user_id = User.objects.get(username=username).pk
-		print(user_id)
-
+		
 		kopia_request['id'] = user_id
 
 		request.POST=kopia_request
 		form=ContactForm(data = request.POST)
-		print(form.errors)
 
-		
 		if form.is_valid():
-
-
 			form.save()
-			print("user zapisany")
+			#print("user zapisany")
 
 
 			return Utworzono(request)
@@ -237,6 +234,51 @@ def zakladanie_konta(request):
 def blad(request, er):
 	return render(request, "blad.html",{'error':er})
 
+def Weryfikacja(request, objekt):
+	
+	form=ContactForm(data = objekt)
+	port = 465
+	smtp_serwer ="smtp.gmail.com"
+	nadawca = "TwojeReferendum.pl@gmail.com"
+	odbiorca = form['email']
+	haslo ="qsisjvtjgarerfcs"
+
+	wiadomosc = MIMEMultipart("alternative")
+	wiadomosc["Subject"] = "Potwierdz swoj adres email w portalu TwojeReferendum"
+	wiadomosc["From"] = "TwojeReferendum@gmail.com"
+	wiadomosc["To"] = form['email']
+
+
+	text = """\
+	Hi,
+	How are you?
+	"""
+	html = """\
+	<html>
+	  <body>
+	    <p>Hi,<br>
+	       How are you?<br>
+	       <a href="http://www.realpython.com">Real Python</a> 
+	       has many great tutorials.
+	    </p>
+	  </body>
+	</html>
+	"""
+
+	part1 = MIMEText(text, "plain")
+	part2 = MIMEText(html, "html")
+
+	wiadomosc.attach(part1)
+	wiadomosc.attach(part2)
+
+	ssl_pol = ssl.create_default_context()
+	with smtplib.SMTP_SSL(smtp_serwer, port, context=ssl_pol) as serwer:
+		serwer.login(nadawca, haslo)
+		serwer.sendmail(nadawca, odbiorca, wiadomosc.as_string())
+	print('wyslany')
+
+
+	return render(request, "weryfikacja.html")
 
 def Utworzono(request):
 	return render(request, "utworzono.html")

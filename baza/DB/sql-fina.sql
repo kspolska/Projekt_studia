@@ -17,7 +17,7 @@ CREATE TABLE "dane_osoba" (
 	"imie" VARCHAR(30) NOT NULL,
 	"nazwisko" VARCHAR(50) NOT NULL,
 	"user" VARCHAR(30) NOT NULL,
-	"haslo" VARCHAR(50) NOT NULL,
+	"haslo" VARCHAR(150) NOT NULL,
 	"data_urodzenia" DATE NOT NULL,
 	"email" VARCHAR(70) NOT NULL,
 	"nr_telefonu" VARCHAR(9) NOT NULL,
