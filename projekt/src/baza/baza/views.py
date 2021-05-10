@@ -45,11 +45,12 @@ def StronaGlowna(request):
 
 def zakladanie_konta(request):
 	
+	#Przypisanie formularza do zmiennej form
 	form=ContactForm()
+
 	if request.method == 'POST':
 
 		kopia_request = request.POST.copy()
-		csrfmiddlewaretoken = kopia_request['csrfmiddlewaretoken']
 
 		# Walidacja nazwy usera
 		username=kopia_request['user']
@@ -85,13 +86,8 @@ def zakladanie_konta(request):
 			error_message ="Haslo jest za słabe, pamiętaj o tym aby używać silnych haseł - to takie które zawierają małe i duże litery, znaki specjalne i cyfry!"
 			return blad(request, error_message)
 
+		#hashowanie hasła
 		kopia_request['haslo'] = make_password(haslo)
-
-		print(haslo)
-		#spradzanie hasla
-		print(check_password(haslo,kopia_request['haslo']))  # returns True
-		print(kopia_request['haslo'])
-
 		
 
 		# przygotowywanie daty urodzenia do wstawienia go w formularz
@@ -102,6 +98,7 @@ def zakladanie_konta(request):
 		#walidacja adresu email
 		email = kopia_request['email']
 
+		#zbadanie czy podae email istnieje już w bazie danych
 		query_email = "SELECT  dane_osoba.email FROM dane_osoba where dane_osoba.email = '{0}'".format(email)
 		with connection.cursor() as cursor:
 			cursor.execute(query_email)
@@ -121,7 +118,7 @@ def zakladanie_konta(request):
 			error_message ="Podany nr telefonu zawiera niedozwolony znak!"
 			return blad(request, error_message)
 
-		
+		#zbadanie czy podae nr telefonu istnieje już w bazie danych
 		query_nr_telefonu = "SELECT  dane_osoba.nr_telefonu FROM dane_osoba where dane_osoba.nr_telefonu = '{0}'".format(nr_telefonu)
 		with connection.cursor() as cursor:
 			cursor.execute(query_nr_telefonu)
@@ -140,7 +137,8 @@ def zakladanie_konta(request):
 		if ( len(pesel)<11):
 			error_message ="Podany nr PESSEL jest za krótki!"
 			return blad(request, error_message)
-		
+
+		#zbadanie czy podae PESEL istnieje już w bazie danych
 		query_pesel = "SELECT  dane_osoba.pesel FROM dane_osoba where dane_osoba.pesel = '{0}'".format(pesel)
 		with connection.cursor() as cursor:
 			cursor.execute(query_pesel)
@@ -149,11 +147,11 @@ def zakladanie_konta(request):
 			error_message ="Podany nr PESSEL jest już w użyciu, jeśli jesteś jego posiadaczem, skontatkuj się z administratorem sieci za pośrednictwem maila na adres : pomoc@twojref.pl"
 			return blad(request, error_message)
 		now = datetime.datetime.now()
-		valid_day=re.compile('[1-2][0-9]|[0][1-9]|[3][0-1]')
 
+		#walidatory daty
+		valid_day=re.compile('[1-2][0-9]|[0][1-9]|[3][0-1]')
 		valid_month=re.compile('[0][1-9]|[1][0-2]')		
 		valid_month_nowe=re.compile('[2][1-9]|[3][0-2]')
-
 		valid_year=re.compile('[0-9][0-9]')
 		valid_year_nowe=re.compile('[0-1][0-9]|[2][0-1]')
 		day_check = str(pesel[4])+str(pesel[5])
@@ -185,7 +183,8 @@ def zakladanie_konta(request):
 		kopia_request.pop('data_urodzenia_day')
 		kopia_request.pop('data_urodzenia_year')
 		kopia_request['data_urodzenia']=data_uro
-		# koniec daty do formularza
+		
+		# Zbadanie czy data urodzenia jest zgodna z PESEL
 		if not(day_check==str((data_uro[8])+str(data_uro[9]))):
 			error_message ="PESEL jest niezgodny z datą urodzenia!"
 			return blad(request, error_message)
@@ -198,7 +197,7 @@ def zakladanie_konta(request):
 			return blad(request, error_message)
 
 
-		#Walidacja liczby kontorlnej
+		#Walidacja liczby kontorlnej w PESEL
 		kontrolna = (int(pesel[0])*1)%10	
 		kontrolna = kontrolna +(int(pesel[1])*3)%10
 		kontrolna = kontrolna +(int(pesel[2])*7)%10
@@ -210,28 +209,29 @@ def zakladanie_konta(request):
 		kontrolna = kontrolna +(int(pesel[8])*1)%10
 		kontrolna = kontrolna +(int(pesel[9])*3)%10
 		kontrolna = kontrolna%10
-		print('10-kontrolna', (10-kontrolna))
-		print('int(pesel[10])', int(pesel[10]))
-		print('(10-kontrolna == int(pesel[10]))%10', (10-kontrolna == int(pesel[10]))%10)
+		
 		if not ((10-kontrolna)%10 == int(pesel[10])):
 			error_message ="PESEL jest niezgodny z datą urodzenia !"
 			return blad(request, error_message)
 
+		#dodanie flagi o tym że user jest nie aktywny
 		kopia_request['is_active']=False
-		print(kopia_request)
+		
+		#stworzenie usera w tabeli auth_user
 		user = User.objects.create_user(username, first_name=imie, last_name=nazwisko, email=email, password=haslo)
 		user_id = User.objects.get(username=username).pk
 		
+		#Nadanie tego samego id co w tabeli auth_user co w tabeli dane_osoba
 		kopia_request['id'] = user_id
 
+		#oprzypisanie zwalidowanych danych do requestu
 		request.POST=kopia_request
-		print(kopia_request)
+		
 		form=ContactForm(data = request.POST)
 
+		#zapisanie danych do tabeli dane_osoba
 		if form.is_valid():
 			form.save()
-			#print("user zapisany")
-
 
 			return Utworzono(request)
 
@@ -246,9 +246,9 @@ def Weryfikacja_potwierdzenie(request, code):
 	print('udalosie')
 	if request.method == 'POST':
 			klucz = request.POST.get('klucz')
-			key=request.POST.get('key')
+			key=code
 			print(klucz)
-			print(key)
+			print(code)
 			if(klucz == key):
 				form.is_active=True
 				if form.is_valid():
@@ -328,23 +328,29 @@ def rocznik(request , lata):
 	return render(request, 'Ustawy_roczniki.html', {"data":results , "rokcznik":lata})
 
 @login_required(login_url='home')
-# działające dodawnie do bazy danych
 def glosowanie(request, id):
+
+	# przypisanie usera który będzie głosował
 	id_uzytkownika = request.user.id
 	#Numer ustawy na ktora oddany jest glos
 	nr_ustawy=str(Ustawy.objects.get(index=id))
 	ustawa=Ustawy.objects.get(index=id)
+
+	#Walidacja czy osoba jest pełnoletnia
+	osoba=Dane_osoba.objects.get(id=request.user.id)
+	wiek =int(str(osoba.data_urodzenia)[0]+str(osoba.data_urodzenia)[1]+str(osoba.data_urodzenia)[2]+str(osoba.data_urodzenia)[3]+str(osoba.data_urodzenia)[5]+str(osoba.data_urodzenia)[6]+str(osoba.data_urodzenia)[8]+str(osoba.data_urodzenia)[9])
+	data_dzis =datetime.datetime.now()
+	data_chek=int(str(data_dzis)[0]+str(data_dzis)[1]+str(data_dzis)[2]+str(data_dzis)[3]+str(data_dzis)[5]+str(data_dzis)[6]+str(data_dzis)[8]+str(data_dzis)[9])
+	wiek = data_chek-wiek
+
 	#Sprawdzenie w bazie czy user glosowal
+	#Możliwość głosowania jest uruchamiana po stronie przeglądarki.
 	check =0
 	query_isdone = "SELECT COUNT(*) FROM glosy WHERE glosujacy = {0} and ustawa = {1}".format(id_uzytkownika, nr_ustawy)
 	with connection.cursor() as cursor:
 		cursor.execute(query_isdone)
 		results = cursor.fetchall()
 		check=results[0][0]
-	if(results[0][0] > 0):
-		print("Brak mozliwosci glosowania")
-
-
 	#Dodanie do requesta znanych wczesniej wartosci
 	data = request.POST.copy()
 	data['ustawa'] = nr_ustawy
@@ -354,30 +360,27 @@ def glosowanie(request, id):
 	form = GlosyForm(data)
 
 	if request.method == 'POST':
-		print('Printing POST:', request.POST)
+		
 
 		#Aktualizacje tabeli wyniki
 		if "Za" in str(request.POST):
 			query = "UPDATE wyniki set wynik_tak = wynik_tak + 1 where ustawa = "+ str(nr_ustawy)
 			with connection.cursor() as cursor:
 				cursor.execute(query)
-			print("Za!")
 		if "Przeciw" in str(request.POST):
 			query = "UPDATE wyniki set wynik_nie = wynik_nie + 1 where ustawa = "+ str(nr_ustawy)
 			with connection.cursor() as cursor:
 				cursor.execute(query)
-			print("Przeciw!")
 		if "Wstrzymuje" in str(request.POST):
-			print("Wstrzymuje!")
 			query = "UPDATE wyniki set wynik_wstrzymany = wynik_wstrzymany + 1 where ustawa = "+ str(nr_ustawy)
 			with connection.cursor() as cursor:
 				cursor.execute(query)
-
+		# dodanie rekordu do tabeli głosy
 		if form.is_valid():
 			instance = form.save()
 			return redirect ('/StronaGlowna')
 
-	context = {'form':form , 'ustawa':nr_ustawy, 'dane':ustawa, 'check':check  }
+	context = {'form':form , 'ustawa':nr_ustawy, 'dane':ustawa, 'check':check,'wiek':wiek, 'osoba':osoba  }
 
 	return render(request, 'oddajglos.html', context)
 
@@ -386,4 +389,4 @@ def Wyniki_glosowania(request, id):
 	ust=Ustawy.objects.get(index=id)
 	wynik=Wyniki.objects.get(ustawa=ust)
 	
-	return render(request, "Wyniki_glosowania.html", {'wyniki':wynik , 'ust':ust} )
+	return render(request, "Wyniki_glosowania.html", {'wyniki':wynik , 'ust':ust } )

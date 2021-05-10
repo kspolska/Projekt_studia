@@ -11,19 +11,36 @@ Głosowanie dotyczy : 	{{dane.tytul}}
 
 {% csrf_token %}
 
+{% if not osoba.is_active %}
+<center>
+<h2> Twoje konto nie jest aktywne, aby oddawać głos zarejestruj swój adres email</h2>
+<h3> Głosowanie nie jest dla Ciebie dostępne</h3>
+<a href="{% url 'home_page' %}"> <b> -> Strony głównej </b></a>
+</center>
+
+{% else %} 
+{% if wiek < 180000 %}
+<center>
+<h2> Niestety nie masz ukończonych 18 lat.</h2>
+<h3> Głosowanie nie jest dla Ciebie dostępne</h3>
+<a href="{% url 'home_page' %}"> <b> -> Strony głównej </b></a>
+</center>
+
+{% else %} 
 {% if check == 0 %}
 <p>Jaka jest Twoje opinia:</p>
 <input type="radio" name="glos" value="Za">Za<br>
 <input type="radio" name="glos" value="Przeciw">Przeciw<br>
 <input type="radio" name="glos" value="Wstrzymuje">Wstrzymuje sie<br>
 <input  type="submit" formmethod="post"  name="Submit">
-
 {% else %} 
 <br><br>
 Niestety oddałes już głos na tą ustawę, możesz poowrócić do <a href="{% url 'home_page' %}"> <b> -> Strony głównej </b></a>
 <br><br><br><br><br><br>
-{% endif %}
 
+{% endif %}
+{% endif %}
+{% endif %}
 </form>
 
 

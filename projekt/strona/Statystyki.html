@@ -1,9 +1,9 @@
 {% extends 'main_base_page.html' %}
 {% block content %}	
 		<br>
-		<h4>W wersji dla gościa możesz zobaczyć w jaki sposób będzie można odczytać wyniki opini publicznej na temat danej ustawy. Dla przykłądu weźmy ustawę :</h4>
+		<h4>Aby sprawdzić wyniki głosowania dla poszczególnej ustawy, poszę przejść do zakładki <a href="{% url 'roczniki' %}"><b>Roczniki</b></a>, następnie wybrać rok w którym usatwa była opublikowana a następnie przy odpowiednim wierszu nacisnąć przycisk "Wyniki". Poniższy diagram przedstawia sposób wyświetlania danych.</h4>
 		<br>
-		<a href="https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU20180000300/O/D20180300.pdf">Dz.U. 2018 poz. 300 - </a> Obwieszczenie Marszałka Sejmu Rzeczypospolitej Polskiej z dnia 11 stycznia 2018 r. w sprawie ogłoszenia jednolitego tekstu ustawy o kosztach sądowych w sprawach cywilnych.
+		<a href="https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU20180000300/O/D20180300.pdf">Dz.U. 2018 poz. 300 - Obwieszczenie Marszałka Sejmu Rzeczypospolitej Polskiej z dnia 11 stycznia 2018 r. w sprawie ogłoszenia jednolitego tekstu ustawy o kosztach sądowych w sprawach cywilnych.</a> 
 		<br>
 		<br>
 		Wykres będzie wyglądał w następujący sposób: 
@@ -19,7 +19,7 @@
   ['Osoby', 'Głosy'],
   ['Za', 452],
   ['Przeciw', 534],
-  ['Wstrzymaly sie',50],
+  ['Wstrzymało się',50],
 ]);
 
 
@@ -31,5 +31,12 @@
 }
 </script>
 	</center>
+	<h6>
+Łączna liczba głosów to: <br>
+Za :  452<br>
+Przeciw:  534<br>
+Wstrzymało się : 50}<br></h6>
+
+
 {% endblock %}
 	
