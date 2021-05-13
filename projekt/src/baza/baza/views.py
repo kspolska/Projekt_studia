@@ -43,6 +43,19 @@ def wyloguj(request):
 def StronaGlowna(request):
 	return render(request, "StronaGlowna.html")
 
+#Funkcja zabezpieczająca przed sql injection 
+def sql_check(text):
+	ile_znakow = len(str(text))
+	wytnij = text
+	wytnij= wytnij.replace(" ", "")
+	wytnij= wytnij.replace("=", "")
+	wytnij= wytnij.replace("\"", "")
+	ile_po_usunieciu = len(wytnij)
+
+	if(ile_znakow==ile_po_usunieciu):
+		return True
+	else:
+		return False
 def zakladanie_konta(request):
 	
 	#Przypisanie formularza do zmiennej form
@@ -54,23 +67,32 @@ def zakladanie_konta(request):
 
 		# Walidacja nazwy usera
 		username=kopia_request['user']
+		if not(sql_check(username)):
+			error_message ="Nazwa użytkownika zawiera niedozwolone znaki!"
+			return blad(request, error_message)
+
 		query_user = "SELECT  dane_osoba.user FROM dane_osoba where dane_osoba.user = '{0}'".format(username)
 		with connection.cursor() as cursor:
 			cursor.execute(query_user)
 			results_user = cursor.fetchall()
 		if(len(results_user) > 0):
-			error_message ="Podany user już istnieje"
+			error_message ="Podany użytkownik już istnieje!"
 			return blad(request, error_message)
 
 
 
 		imie = kopia_request['imie']
+		if not(sql_check(imie)):
+			error_message ="Imię zawiera niedozwolone znaki!"
+			return blad(request, error_message)
 		nazwisko = kopia_request['nazwisko']
-
+		if not(sql_check(nazwisko)):
+			error_message ="Nazwisko zawiera niedozwolone znaki!"
+			return blad(request, error_message)
 		# Walidacja Hasła
 		haslo = kopia_request['haslo']
 		if ( len(haslo)<8):
-			error_message ="Podany haslo jest za krótkie, pamiętaj o tym aby używać silnych haseł. To takie które zawierają małe i duże litery, znaki specjalne i cyfry!"
+			error_message ="Podane haslo jest za krótkie, pamiętaj o tym aby używać silnych haseł. To takie które zawierają małe i duże litery, znaki specjalne i cyfry!"
 			return blad(request, error_message)
 		moc_hasla=0	
 		if (re.search("[a-z]",haslo)):
@@ -97,7 +119,9 @@ def zakladanie_konta(request):
 
 		#walidacja adresu email
 		email = kopia_request['email']
-
+		if not(sql_check(email)):
+			error_message ="E-mail zawiera niedozwolone znaki!"
+			return blad(request, error_message)
 		#zbadanie czy podae email istnieje już w bazie danych
 		query_email = "SELECT  dane_osoba.email FROM dane_osoba where dane_osoba.email = '{0}'".format(email)
 		with connection.cursor() as cursor:
@@ -241,20 +265,6 @@ def zakladanie_konta(request):
 def blad(request, er):
 	return render(request, "blad.html",{'error':er})
 
-def Weryfikacja_potwierdzenie(request, code):
-	form=Dane_osoba.objects.get(id=request.user.id)	
-	print('udalosie')
-	if request.method == 'POST':
-			klucz = request.POST.get('klucz')
-			key=code
-			print(klucz)
-			print(code)
-			if(klucz == key):
-				form.is_active=True
-				if form.is_valid():
-					form.save()
-					return redirect('home_page')
-	return render(request, "weryfikacja.html", {'form1':form})
 
 
 @login_required(login_url='home')
@@ -263,37 +273,51 @@ def Weryfikacja(request):
 	form=Dane_osoba.objects.get(id=request.user.id)	
 	
 	if (str(form.is_active)=="False"):
-		seed(randint(1000,9999))
-		key=randint(1000,9999) 
-		port = 465
-		smtp_serwer ="smtp.gmail.com"
-		nadawca = "TwojeReferendum.pl@gmail.com"
-		odbiorca = form.email
-		haslo ="qsisjvtjgarerfcs"
+		if request.method == 'GET':
+			seed(randint(1000,9999))
+			key=randint(1000,9999) 
+			port = 465
+			smtp_serwer ="smtp.gmail.com"
+			nadawca = "TwojeReferendum.pl@gmail.com"
+			odbiorca = form.email
+			haslo ="qsisjvtjgarerfcs"
 
-		wiadomosc = MIMEMultipart("alternative")
-		wiadomosc["Subject"] = "Potwierdz swoj adres email w portalu TwojeReferendum"
-		wiadomosc["From"] = "TwojeReferendum@gmail.com"
-		wiadomosc["To"] = form.email
+			wiadomosc = MIMEMultipart("alternative")
+			wiadomosc["Subject"] = "Potwierdz swoj adres email w portalu TwojeReferendum"
+			wiadomosc["From"] = "TwojeReferendum@gmail.com"
+			wiadomosc["To"] = form.email
 
 
-		text = "Klucz weryfikacyjny to :" + str(key)
-		
-		part1 = MIMEText(text, "plain")
-		
-		
-		wiadomosc.attach(part1)
+			text = "Klucz weryfikacyjny to :" + str(key)
+			
+			part1 = MIMEText(text, "plain")
+			
+			
+			wiadomosc.attach(part1)
 
-		
-		ssl_pol = ssl.create_default_context()
-		with smtplib.SMTP_SSL(smtp_serwer, port, context=ssl_pol) as serwer:
-			serwer.login(nadawca, haslo)
-			serwer.sendmail(nadawca, odbiorca, wiadomosc.as_string())
-		print('wyslany')
-		return Weryfikacja_potwierdzenie(request,key)
+			
+			ssl_pol = ssl.create_default_context()
+			with smtplib.SMTP_SSL(smtp_serwer, port, context=ssl_pol) as serwer:
+				serwer.login(nadawca, haslo)
+				serwer.sendmail(nadawca, odbiorca, wiadomosc.as_string())
+			print('wyslany')
+			form.haslo=key
+			form.save()
+			print(form.haslo)
+		elif request.method == 'POST':
+			klucz = request.POST.get('klucz')
+			key=form.haslo
+			print(klucz)
+			print(key)
+			if(klucz == key):
+				form.is_active=True
+				form.save()
+				return redirect('home_page')
+			else:
+				messages.info(request, ' Nieprawidłowy kod!')
 
-		
 	return render(request, "weryfikacja.html", {'form1':form})
+
 
 def Utworzono(request):
 	return render(request, "utworzono.html")
@@ -309,14 +333,6 @@ def Roczniki(request):
 @login_required(login_url='home')
 def Regulamin(request):
 	return render(request, "Regulamin.html")
-
-@login_required(login_url='home')
-def Projekt(request):
-	return render(request, "Projekt.html")
-
-@login_required(login_url='home')
-def Omnie(request):
-	return render(request, "Omnie.html")
 
 @login_required(login_url='home')
 def Kontakt(request):
@@ -359,26 +375,31 @@ def glosowanie(request, id):
 	#Nowy formularz z pełnymi danymi
 	form = GlosyForm(data)
 
-	if request.method == 'POST':
-		
-
-		#Aktualizacje tabeli wyniki
-		if "Za" in str(request.POST):
-			query = "UPDATE wyniki set wynik_tak = wynik_tak + 1 where ustawa = "+ str(nr_ustawy)
-			with connection.cursor() as cursor:
-				cursor.execute(query)
-		if "Przeciw" in str(request.POST):
-			query = "UPDATE wyniki set wynik_nie = wynik_nie + 1 where ustawa = "+ str(nr_ustawy)
-			with connection.cursor() as cursor:
-				cursor.execute(query)
-		if "Wstrzymuje" in str(request.POST):
-			query = "UPDATE wyniki set wynik_wstrzymany = wynik_wstrzymany + 1 where ustawa = "+ str(nr_ustawy)
-			with connection.cursor() as cursor:
-				cursor.execute(query)
-		# dodanie rekordu do tabeli głosy
-		if form.is_valid():
-			instance = form.save()
-			return redirect ('/StronaGlowna')
+	#podwójne sprawdzenie czy użytkownik rzeczywiście jest aktywny, pełnoletni i jeszcze nie głosował.
+	#jeśli warunki są spełnione to dodajemy informacje o głosowaniu.
+	if(osoba.is_active):
+		if(wiek>=180000):
+			if(check==0):
+				if request.method == 'POST':
+					
+					print('test')
+					#Aktualizacje tabeli wyniki
+					if "Za" in str(request.POST):
+						query = "UPDATE wyniki set wynik_tak = wynik_tak + 1 where ustawa = "+ str(nr_ustawy)
+						with connection.cursor() as cursor:
+							cursor.execute(query)
+					if "Przeciw" in str(request.POST):
+						query = "UPDATE wyniki set wynik_nie = wynik_nie + 1 where ustawa = "+ str(nr_ustawy)
+						with connection.cursor() as cursor:
+							cursor.execute(query)
+					if "Wstrzymuje" in str(request.POST):
+						query = "UPDATE wyniki set wynik_wstrzymany = wynik_wstrzymany + 1 where ustawa = "+ str(nr_ustawy)
+						with connection.cursor() as cursor:
+							cursor.execute(query)
+					# dodanie rekordu do tabeli głosy
+					if form.is_valid():
+						instance = form.save()
+						return redirect ('/StronaGlowna')
 
 	context = {'form':form , 'ustawa':nr_ustawy, 'dane':ustawa, 'check':check,'wiek':wiek, 'osoba':osoba  }
 

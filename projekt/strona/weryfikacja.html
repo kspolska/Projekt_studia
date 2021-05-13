@@ -7,19 +7,24 @@
 <center>
 	{% if not form1.is_active %}
 		<form  id="login" method="post"> {% csrf_token %}
-		<center><h1>Twój user jest nie aktywny!</h1></center><br>
-		<center><h2>Na podany przez Ciebie adres email wysłany został kod weryfikacyjny</h2></center> <br>
-		<center><h2>Wpisz go w tabelę poniżej aby aktywować użytkownika</h2></center>
-		<center><input name="klucz" placeholder="####" autofocus /></center><br>
+		<center><h1>Twoje konto nie jest aktywne!</h1></center><br>
+		<center><h2>Na podany przez Ciebie adres email wysłany został kod weryfikacyjny.</h2></center> <br>
+		<center><h2>Wpisz kod i naciśnij przycisk poniżej aby zweryfikować e-mail.</h2></center>
 
-		<center><input class="button button" id="submit" type="submit" value="Autoryzuj"></center>
+		<input name="klucz" placeholder="####" autofocus />
+		<center><button class="button button"  id="submit" type="submit"  formmethod="post" > Weryfikuj konto</button></center>
 		<br><br>
 		<a href="{% url 'wyloguj' %}"  style="color:blue;"> Wyloguj</a>
 		</form>
 		</center>
+		{% for message in messages %}
+			<center>
+			<p style="color:red;"> {{message}}</p>	
+			</center>
+		{% endfor %}	
  	{% else %}
- 		<center><h1>User został zwereyfikowany</h1></center><br>
- 		</center>
+ 		<center><h1>Użytkownik został zwereyfikowany</h1></center><br>
+ 		<center>
 		<br><br>
 		<a href="{% url 'home_page' %}"  style="color:blue;"> Strona główna</a>
 		</form>

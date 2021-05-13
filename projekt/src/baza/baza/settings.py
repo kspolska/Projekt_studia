@@ -126,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = '/strona/'
 
-#próba zmiany folderu statycznego
+
 #STATIC_URL = os.path.join(BASE_DIR, '/strona/')
 MEDIA_URL = '/static/'
 

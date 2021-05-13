@@ -15,8 +15,6 @@ class ContactForm(forms.ModelForm):
 		for i in range(120) :
 			BIRTH_YEAR_CHOICES.append(now.year-i)
 
-		#validacja numeru telefonu
-		regex =re.compile("\d(9)")
 		model = Dane_osoba
 
 		fields  = [ 'id','imie','nazwisko','user','haslo','data_urodzenia','email','nr_telefonu','pesel','is_active']
@@ -31,8 +29,3 @@ class GlosyForm(forms.ModelForm):
 		
 		fields = ['ustawa', 'glosujacy']
 		widgets = {'glosujacy': forms.HiddenInput(), 'ustawa': forms.HiddenInput()}
-
-class WynikiForm(forms.ModelForm):
-	class Meta:
-		model=Wyniki
-		fields = '__all__'
