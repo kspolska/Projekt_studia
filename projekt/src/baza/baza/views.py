@@ -50,6 +50,7 @@ def sql_check(text):
 	wytnij= wytnij.replace(" ", "")
 	wytnij= wytnij.replace("=", "")
 	wytnij= wytnij.replace("\"", "")
+	wytnij= wytnij.replace(";", "")
 	ile_po_usunieciu = len(wytnij)
 
 	if(ile_znakow==ile_po_usunieciu):
