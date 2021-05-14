@@ -10,6 +10,7 @@ sudo yum -y install ansible
 ## Ansible magic
 ansible-playbook /repos/TwojeReferendum_projekt/ansible/install-tools.yml
 ansible-playbook /repos/TwojeReferendum_projekt/ansible/configure-database.yml
+ansible-playbook /repos/TwojeReferendum_projekt/ansible/add_cron.yml
 
 sudo pip3 install --upgrade django
 

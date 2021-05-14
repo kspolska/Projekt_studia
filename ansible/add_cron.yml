@@ -1,0 +1,23 @@
+---
+- name: Configure cron
+  hosts: localhost
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Fetch records from site
+    cron:
+      name: "Fetch data"
+      hour: "4"
+      minute: "0"
+      job: "python3 /repos/TwojeReferendum_projekt/skrypty/vote_v.1.0.py"
+      user: "vagrant"
+
+  - name: Export csv to database
+    cron:
+      name: "Export CSV to database"
+      hour: "5"
+      minute: "0"
+      job: "python3 /repos/TwojeReferendum_projekt/skrypty/export_to_database.py"
+      user: "vagrant"
