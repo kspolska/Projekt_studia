@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Zakłądanie konta</title>
+	<title>Zakładanie konta</title>
 	<link rel ="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
 </head>
 
@@ -10,17 +10,17 @@
 	<form  id="konto" action="." method="POST">
 		{% csrf_token %}
 		<div class="header">
-			<h3>Stwóz konto</h3>
+			<h3>Stwórz konto</h3>
 			<p>Podaj swoje dane</p>
 		</div>
 		<div class="daneform">
-			<label for="imie">Imie:</label><br>
+			<label for="imie">Imię:</label><br>
 			{{data.imie}}<br><br>
 			<label for="nazwisko">Nazwisko:</label><br>
 			{{data.nazwisko}}<br><br>
 			<label for="nazwa_uzytkownika">Nazwa użytkownika:</label><br>
 			{{data.user}}<br><br>
-			<label for="pwd">Haslo:</label><br>
+			<label for="pwd">Hasło:</label><br>
 			{{data.haslo}}<br><br>
 			<label for="data_urodzenia">Data urodzenia:</label><br>
 			{{data.data_urodzenia}}<br><br>
@@ -28,7 +28,7 @@
 			{{data.email}}<br><br>
 			<label for="phone">Numer telefonu:</label><br>
 			{{data.nr_telefonu}}<br><br>
-			<label for="pesel"> Pesel:</label><br>
+			<label for="pesel"> PESEL:</label><br>
 			{{data.pesel}}
 			<br><br>
 			<input class="button2 button2" type="submit" formmethod="POST"  name="Submit">	

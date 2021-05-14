@@ -22,7 +22,7 @@ Głosowanie dotyczy : 	{{dane.tytul}}
 {% if wiek < 180000 %}
 <center>
 <h2> Niestety nie masz ukończonych 18 lat.</h2>
-<h3> Głosowanie nie jest dla Ciebie dostępne</h3>
+<h3> Głosowanie nie jest dla Ciebie dostępne.</h3>
 <a href="{% url 'home_page' %}"> <b> -> Strony głównej </b></a>
 </center>
 
@@ -31,7 +31,7 @@ Głosowanie dotyczy : 	{{dane.tytul}}
 <p>Jaka jest Twoje opinia:</p>
 <input type="radio" name="glos" value="Za">Za<br>
 <input type="radio" name="glos" value="Przeciw">Przeciw<br>
-<input type="radio" name="glos" value="Wstrzymuje">Wstrzymuje sie<br>
+<input type="radio" name="glos" value="Wstrzymuje">Wstrzymuję się<br>
 <input  type="submit" formmethod="post"  name="Submit">
 {% else %} 
 <br><br>

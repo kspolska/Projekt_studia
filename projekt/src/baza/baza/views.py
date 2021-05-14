@@ -169,7 +169,7 @@ def zakladanie_konta(request):
 			cursor.execute(query_pesel)
 			results_pesel = cursor.fetchall()
 		if(len(results_pesel) > 0):
-			error_message ="Podany nr PESSEL jest już w użyciu, jeśli jesteś jego posiadaczem, skontatkuj się z administratorem sieci za pośrednictwem maila na adres : pomoc@twojref.pl"
+			error_message ="Podany nr PESEL jest już w użyciu, jeśli jesteś jego posiadaczem, skontatkuj się z administratorem sieci za pośrednictwem maila na adres : pomoc@twojref.pl"
 			return blad(request, error_message)
 		now = datetime.datetime.now()
 
@@ -185,12 +185,12 @@ def zakladanie_konta(request):
 
 		#walidacja dnia
 		if not (valid_day.match(day_check)):
-			error_message ="Niepoprawny adres PESEL!"
+			error_message ="Niepoprawny PESEL!"
 			return blad(request, error_message)
 		#walidacja miesiąca
 		if not ((valid_month.match(month_check)) or ( valid_month_nowe.match(month_check) and valid_year_nowe.match(year_check) ) ):
 
-			error_message ="Niepoprawny adres PESEL!"
+			error_message ="Niepoprawny PESEL!"
 			return blad(request, error_message)
 
 		# poniżej dalsza część pesel po ustaleniu jaka jest data dla formularza
