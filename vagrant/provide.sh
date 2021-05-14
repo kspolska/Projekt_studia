@@ -8,11 +8,11 @@ sudo yum -y install ansible
 
 
 ## Ansible magic
-ansible-playbook /repos/Projekt_studia/ansible/install-tools.yml
-ansible-playbook /repos/Projekt_studia/ansible/configure-database.yml
+ansible-playbook /repos/TwojeReferendum_projekt/ansible/install-tools.yml
+ansible-playbook /repos/TwojeReferendum_projekt/ansible/configure-database.yml
 
 sudo pip3 install --upgrade django
 
-cd /repos/Projekt_studia/projekt/src/baza
+cd /repos/TwojeReferendum_projekt/projekt/src/baza
 python3 manage.py migrate
 python3 manage.py runserver 192.168.33.10:8000

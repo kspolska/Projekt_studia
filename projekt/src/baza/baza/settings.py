@@ -57,7 +57,7 @@ ROOT_URLCONF = 'baza.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/repos/Projekt_studia/projekt/strona'],
+        'DIRS': ['/repos/TwojeReferendum_projekt/projekt/strona'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

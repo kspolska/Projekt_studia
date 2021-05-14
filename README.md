@@ -16,7 +16,7 @@ vagrant ssh
 
 # To start server
 sudo systemctl start postgresql
-cd /repos/Projekt_studia/projekt/src/baza
+cd /repos/TwojeReferendum_projekt/projekt/src/baza
 python3 manage.py runserver 192.168.33.10:8000
 
 Connect to 192.168.33.10:8000

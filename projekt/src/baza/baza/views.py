@@ -30,7 +30,7 @@ def Start(request):
 				return redirect('weryfikacja')
 			return redirect('home_page')
 		else:
-			messages.info(request, ' Nazwa urzydkownika lub haslo nie poprawne!')
+			messages.info(request, ' Nazwa użytkownika lub haslo nie poprawne!')
 	context ={}
 	return render(request, "Start.html", context)
 

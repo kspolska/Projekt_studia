@@ -84,12 +84,12 @@
     - name: Make django user owner of database
       postgresql_query:
         db: projekt
-        path_to_script: /repos/Projekt_studia/baza/DB/grant_accesses.sql
+        path_to_script: /repos/TwojeReferendum_projekt/baza/DB/grant_accesses.sql
 
     - name: Run queries from SQL script
       postgresql_query:
         db: projekt
-        path_to_script: /repos/Projekt_studia/baza/DB/sql-fina.sql
+        path_to_script: /repos/TwojeReferendum_projekt/baza/DB/sql-fina.sql
       when: newdatabase.changed
 
     become_user: postgres
